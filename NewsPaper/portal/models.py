@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from .censor import censor, BAD_WORDS
+
 
 class Author(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -44,6 +46,12 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.FloatField(default=0)
 
+    def save(self, *args, **kwargs):
+        self.header = censor(self.header, BAD_WORDS)
+        self.text = censor(self.text, BAD_WORDS)
+
+        super().save(*args, **kwargs)
+
     def like(self):
         self.rating += 1
         self.save()
@@ -54,6 +62,10 @@ class Post(models.Model):
 
     def preview(self):
         return self.text[0:125] + '...'
+
+    def __str__(self):
+        return f'{self.header} \n {self.text[:50]}...'
+
 
 class PostCategory(models.Model):
     post_id = models.ForeignKey(Post, on_delete=models.CASCADE)

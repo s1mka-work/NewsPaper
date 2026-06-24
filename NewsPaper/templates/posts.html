@@ -1,5 +1,7 @@
 {% extends 'flatpages/default.html' %}
 
+{% load custom_filter %}
+
 {% block title %}
 Posts
 {% endblock title %}
@@ -17,9 +19,9 @@ Posts
 
         {% for post in posts %}
         <tr>
-            <td>{{ post.header }}</td>
+            <td>{{ post.header|censor }}</td>
             <td>{{ post.date|date:'d M Y' }}</td>
-            <td>{{ post.text|truncatechars:20 }}</td>
+            <td>{{ post.text|truncatechars:20|censor }}</td>
         </tr>
         {% endfor %}
     </table>

@@ -1,0 +1,31 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filter %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+    <h1>Поиск новостей</h1>
+    <form method="get">
+        {{ filter.form.as_p }}
+
+        <button type="submit">Найти</button>
+    </form>
+<table>
+    <tr>
+            <td>Заголовок</td>
+            <td>Дата публикации</td>
+            <td>Превью</td>
+    </tr>
+    {% for post in filter.qs %}
+    <tr>
+        <td>{{ post.header|censor }}</td>
+        <td>{{ post.date|date:'d M Y' }}</td>
+        <td>{{ post.text|truncatechars:20|censor }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}
